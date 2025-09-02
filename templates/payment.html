@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        input, button { padding: 10px; font-size: 16px; }
+        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        img { max-width: 200px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='logo_small.png') }}" alt="Logo">
+    <h1>Complete Your Payment</h1>
+    <form id="paymentForm">
+        <input type="text" id="ig_username" placeholder="Instagram Username" required>
+        <input type="text" id="full_name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="phone" placeholder="Phone" required>
+        <input type="text" id="state" placeholder="State" required>
+        
+        <button type="submit">Pay ₹12</button>
+    </form>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        document.getElementById('paymentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Collect form data
+            const userData = {
+                ig_username: document.getElementById('ig_username').value,
+                full_name: document.getElementById('full_name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                state: document.getElementById('state').value
+            };
+            
+            // Create Razorpay order
+            const orderResponse = await fetch('/create_order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: 1200 }) // ₹500 in paise
+            });
+            const order = await orderResponse.json();
+            
+            if (!orderResponse.ok) {
+                alert('Error creating order: ' + order.error);
+                return;
+            }
+            
+            // Initialize Razorpay Checkout
+            const options = {
+                key: '{{ razorpay_key_id }}',
+                amount: order.amount,
+                currency: order.currency,
+                order_id: order.order_id,
+                name: 'Alsium App',
+                description: 'Payment for Registration',
+                handler: async function (response) {
+                    // Verify payment and save user data
+                    const verifyResponse = await fetch('/verify_payment', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_signature: response.razorpay_signature,
+                            user_data: userData
+                        })
+                    });
+                    const verifyResult = await verifyResponse.json();
+                    
+                    if (verifyResponse.ok) {
+                        alert('Payment successful! User ID: ' + verifyResult.user_id);
+                        window.location.href = '/'; // Redirect to homepage
+                    } else {
+                        alert('Payment verification failed: ' + verifyResult.error);
+                    }
+                },
+                prefill: {
+                    name: userData.full_name,
+                    email: userData.email,
+                    contact: userData.phone
+                },
+                theme: {
+                    color: '#F37254'
+                }
+            };
+            
+            const rzp = new Razorpay(options);
+            rzp.open();
+        });
+    </script>
+</body>
+</html>
