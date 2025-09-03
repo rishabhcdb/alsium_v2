@@ -1,28 +1,207 @@
 <!DOCTYPE html>
-<html>
+<html data-wf-domain="looma-template.webflow.io" data-wf-page="684ae3ff63229c00b28e72fb"
+    data-wf-site="684ae3ff63229c00b28e72f2">
+
 <head>
-    <title>Payment Page</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
-        form { display: flex; flex-direction: column; gap: 10px; }
-        input, button { padding: 10px; font-size: 16px; }
-        button { background-color: #4CAF50; color: white; border: none; cursor: pointer; }
-        button:hover { background-color: #45a049; }
-        img { max-width: 200px; margin-bottom: 20px; }
-    </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stripe Checkout Clone</title>
+    <meta name="description" content="Modern Stripe checkout page clone with responsive design" />
+    <meta name="author" content="Lovable" />
+
+    <meta property="og:title" content="Stripe Checkout Clone" />
+    <meta property="og:description" content="Modern Stripe checkout page clone with responsive design" />
+    <meta property="og:type" content="website" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    <link rel="stylesheet" href="static/checkout.css">
 </head>
 <body>
-    <img src="{{ url_for('static', filename='logo_small.png') }}" alt="Logo">
-    <h1>Complete Your Payment</h1>
-    <form id="paymentForm">
-        <input type="text" id="ig_username" placeholder="Instagram Username" required>
-        <input type="text" id="full_name" placeholder="Full Name" required>
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="tel" id="phone" placeholder="Phone" required>
-        <input type="text" id="state" placeholder="State" required>
-        
-        <button type="submit">Pay ₹12</button>
-    </form>
+    <div class="checkout-container">
+      <!-- Left Side - Order Summary (Hidden on mobile) -->
+      <div class="order-summary">
+        <div class="order-content">
+          <div class="header">
+            <div class="brand-header">
+              <div class="brand-icon">A</div>
+              <span class="brand-name">Alsium</span>
+              <span class="test-mode">CHECKOUT</span>
+            </div>
+            
+            <h1 class="page-title">Interview Cheatsheet</h1>
+            <div class="total-amount">₹50</div>
+          </div>
+
+          <!-- Order Items -->
+          <div class="order-items">
+            <div class="order-item">
+              <div class="item-icon blue">
+                <div class="item-icon-inner"></div>
+              </div>
+              <div class="item-details">
+                <div class="item-name">Interview prep cheatsheet</div>
+                <div class="item-quantity">Qty: 1</div>
+              </div>
+              <div class="item-price">₹50</div>
+            </div>
+
+            <div class="order-item">
+              <div class="item-icon purple">
+                <div class="item-icon-inner"></div>
+              </div>
+              <div class="item-details">
+                <div class="item-name"> 1x Entry to WIN Goa Trip</div>
+                <div class="item-quantity">Qty: 1</div>
+              </div>
+              <div class="item-price">
+                Free
+              </div>
+            </div>
+          </div>
+
+          <!-- Order Summary -->
+          <div class="order-totals">
+            <div class="total-row subtotal">
+              <span>Subtotal</span>
+              <span>₹50</span>
+            </div>
+            <div class="total-row shipping">
+              <div>
+                <div>Shipping</div>
+                <div class="shipping-details">Sent through E-mail</div>
+              </div>
+              <span>₹0</span>
+            </div>
+            <div class="total-row final">
+              <span>Total due</span>
+              <span>₹50</span>
+            </div>
+          </div>
+
+          <div class="powered-by">
+            Powered by <span class="stripe">Razorpay</span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Right Side - Payment Form -->
+      <div class="payment-form">
+        <div class="form-content">
+          <form form id="paymentForm" >
+            <!-- Apple Pay Button -->
+            <div class="divider">Pay securely</div>
+
+
+            <!-- Shipping Information -->
+            <div class="form-section">
+              <h2 class="section-title">Shipping information</h2>
+              
+              <div class="form-group">
+                <label for="ig_username" class="form-label">Instagram Username</label>
+                <input
+                  type="text"
+                  id="ig_username"
+                  class="form-input"
+                  placeholder="Instagram Username"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="form-input"
+                  placeholder="Email"
+                  required
+                />
+              </div>
+
+              <div class="form-group">
+                <label for="full_name" class="form-label">Full Name</label>
+                <input
+                  type="text"
+                  id="full_name"
+                  class="form-input"
+                  placeholder="Full Name"
+                  required
+                />
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone" class="form-label">Phone</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    pattern="[0-9]{10}" 
+                    maxlength="10"
+                    class="form-input"
+                    placeholder="Phone"
+                    required
+                  />
+                </div>
+                
+                <div class="form-group">
+                  <label for="state" class="form-label">State</label>
+                <select id="state" class="form-input" required>
+                <option value="">Select State</option>
+                <option value="UP">Uttar Pradesh</option>
+                <option value="MH">Maharashtra</option>
+                <option value="DL">Delhi</option>
+                <option value="KA">Karnataka</option>
+                <option value="TN">Tamil Nadu</option>
+  <!-- add more as needed -->
+</select>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Details
+            <div class="form-section">
+                <div class="card-input-group">
+                  <input
+                    type="text"
+                    class="form-input card-number-input"
+                    placeholder="1234 1234 1234 1234"
+                  />
+                  <div class="card-icons">
+                    <div class="card-icon visa">••••</div>
+                    <div class="card-icon mastercard"></div>
+                    <div class="card-icon amex"></div>
+                    <div class="card-icon jcb"></div>
+                  </div>
+                
+            </div> -->
+            <p class="payment-note">Note: All info entered must be accurate, or else we can't reach out to you</p>
+            
+
+            <!-- Submit Button -->
+            <button type="submit" class = "apple-pay-btn">Pay ₹50</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    
+    <!-- <img src="{{ url_for('static', filename='logo_small.png') }}" alt="Logo"> -->
+    <!-- <h1>Complete Your Payment</h1>
+    <div class="form-container" style = "margin-top: 30px;">
+        <form id="paymentForm" class="newsletter-form">
+            <input class="newsletter-text-field w-input" type="text" id="ig_username" placeholder="Instagram Username" required>
+            <input class="newsletter-text-field w-input" type="text" id="full_name" placeholder="Full Name" required>
+            <input class="newsletter-text-field w-input" type="email" id="email" placeholder="Email" required>
+            <input class="newsletter-text-field w-input" type="tel" id="phone" placeholder="Phone" required>
+            <input class="newsletter-text-field w-input" type="text" id="state" placeholder="State" required>
+            
+            <button type="submit" style="color: rgb(23, 23, 23);">Pay ₹12</button>
+        </form>
+    </div> -->
+
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         document.getElementById('paymentForm').addEventListener('submit', async (e) => {

@@ -114,7 +114,7 @@
 #         )
 #         db.session.add(user)
 #         db.session.commit()
-        
+# old is gold text yes        
 #         return jsonify({
 #             'status': 'Payment verified and user saved',
 #             'user_id': user.id

@@ -47,6 +47,11 @@ def index():
 def payment():
     return render_template('payment.html', razorpay_key_id=RAZORPAY_KEY_ID)
 
+@app.route('/int_sheet')
+def int_sheet():
+    return render_template('int_sheet_goa.html')
+
+
 
 @app.route('/create_order', methods=['POST'])
 def create_order():
